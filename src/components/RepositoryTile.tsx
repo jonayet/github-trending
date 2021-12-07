@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Contributor, getContributors, Repository } from "../services/github";
 import { ContributorView } from "./ContributorView";
 
-import styles from "./RepositoryTile.module.scss";
+import styles from "./styles.module.scss";
 
 export interface RepositoryTaileProps {
   repository: Repository;
@@ -56,6 +56,7 @@ export const RepositoryTile = ({ repository }: RepositoryTaileProps) => {
         setError(err);
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -63,7 +64,11 @@ export const RepositoryTile = ({ repository }: RepositoryTaileProps) => {
       <Title repo={repository} />
       <div className={styles.descriptions}>📓 {repository.description}</div>
       <div>⭐ {repository.stars}</div>
-      <Contributors loading={Loading} error={error} contributors={contributors} />
+      <Contributors
+        loading={Loading}
+        error={error}
+        contributors={contributors}
+      />
     </div>
   );
 };

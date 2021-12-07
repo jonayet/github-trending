@@ -19,13 +19,6 @@ export interface Params {
   [key: string]: string | number;
 }
 
-const defaultParams: Params = {
-  sort: "name",
-  order: "asc",
-  page: 1,
-  per_page: 20,
-};
-
 const transformRepo = (item: any = {}): Repository => ({
   name: item.name,
   description: item.description,
@@ -44,16 +37,12 @@ const fetchJson = async (url: string) => {
   return response.json();
 };
 
-export const getRepos = async (searchParams?: Params) => {
+export const getRepos = async (params: Params) => {
   const githubRepoApi =
     "https://api.github.com/search/repositories?q=created:%3E2021-01-07+in:name,full_name,stars";
-  const params = {
-    ...defaultParams,
-    ...searchParams,
-  } as Record<string, string>;
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(params as Record<string, string>).toString();
   const items: unknown[] =
-    (await fetchJson(`${githubRepoApi}${query}`)).items || [];
+    (await fetchJson(`${githubRepoApi}&${query}`)).items || [];
   return items.map(transformRepo);
 };
 
@@ -68,7 +57,7 @@ export const getContributors = async (ownerId: string, repoName: string) => {
 
     return Promise.all(promises);
   } catch (err) {
-    console.error(new Error(err as string));
+    console.warn(new Error(err as string));
     return Promise.resolve([
       {
         fullName: "Breakdowns Slam-mirrorbot",
